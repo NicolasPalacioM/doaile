@@ -39,6 +39,7 @@ const Searchbar: React.FC = () => {
       e.key === "Done"
     ) {
       e.preventDefault();
+      e.stopPropagation();
       e.currentTarget.closest("form")?.requestSubmit();
     }
   };
