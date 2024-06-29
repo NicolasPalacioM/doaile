@@ -4,8 +4,8 @@ import { DynamoDB } from "@aws-sdk/client-dynamodb";
 const dynamodb = new DynamoDB({
   region: "us-east-1",
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
+    accessKeyId: process.env.DYNAMO_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.DYNAMO_SECRET_ACCESS_KEY as string,
   },
 });
 
