@@ -1,14 +1,12 @@
 "use client";
-
 import { storeResults } from "@/app/_lib/actions";
-import React, { useState } from "react";
-
+import React, { useState, useRef } from "react";
 import DescriptionIcon from "@mui/icons-material/Description";
 import GridOnIcon from "@mui/icons-material/GridOn";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import SearchIcon from "@mui/icons-material/Search";
 import SlideshowIcon from "@mui/icons-material/Slideshow";
-import { Box, InputAdornment, TextField } from "@mui/material";
+import { Box, InputAdornment, TextField, Button } from "@mui/material";
 import Select, { components } from "react-select";
 
 const fileTypeOptions = [
@@ -22,6 +20,7 @@ const fileTypeOptions = [
 const Searchbar: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [selectValue, setSelectValue] = useState<string>("");
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -31,16 +30,10 @@ const Searchbar: React.FC = () => {
     setSelectValue(selectedOption.value);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (
-      e.key === "Enter" ||
-      e.key === "NumpadEnter" ||
-      e.key === "Go" ||
-      e.key === "Done"
-    ) {
-      e.preventDefault();
-      e.stopPropagation();
-      e.currentTarget.closest("form")?.requestSubmit();
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      submitButtonRef.current?.click();
     }
   };
 
@@ -116,6 +109,9 @@ const Searchbar: React.FC = () => {
             }),
           }}
         />
+        <Button type="submit" ref={submitButtonRef} style={{ display: "none" }}>
+          Submit
+        </Button>
       </Box>
     </form>
   );
