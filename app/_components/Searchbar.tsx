@@ -32,7 +32,12 @@ const Searchbar: React.FC = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === "NumpadEnter") {
+    if (
+      e.key === "Enter" ||
+      e.key === "NumpadEnter" ||
+      e.key === "Go" ||
+      e.key === "Done"
+    ) {
       e.preventDefault();
       e.currentTarget.closest("form")?.requestSubmit();
     }
