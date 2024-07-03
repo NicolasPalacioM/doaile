@@ -60,8 +60,6 @@ export async function getResults(
   fileType: string,
   startIndex: number | null = 1
 ): Promise<SearchResponse> {
-  const apiKey = "AIzaSyCHDyEMef7010uLqkduxPqWqn6nFIbwWIE";
-  const searchEngineId = "156d54fbb62b2447c";
   const url = `https://www.googleapis.com/customsearch/v1?key=${
     process.env.SEARCH_API_KEY
   }&cx=${process.env.SEARCH_ENGINE_ID}&q=${encodeURIComponent(query)}${
