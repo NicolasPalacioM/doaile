@@ -72,8 +72,6 @@ export async function getResults(
     const response = await fetch(url);
     const data = await response.json();
 
-    console.log(startIndex);
-
     if (data.items && data.items.length > 0) {
       const searchResults: SearchResult[] = data.items.map((item: any) => ({
         title: item.title,

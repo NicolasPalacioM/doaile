@@ -1,5 +1,4 @@
 "use client";
-
 import { storeResults } from "@/app/_lib/actions";
 import React, { useState, useRef } from "react";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -7,27 +6,33 @@ import GridOnIcon from "@mui/icons-material/GridOn";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import SearchIcon from "@mui/icons-material/Search";
 import SlideshowIcon from "@mui/icons-material/Slideshow";
-import { Box, InputAdornment, TextField, Button } from "@mui/material";
-import Select, { components } from "react-select";
-
-const fileTypeOptions = [
-  { value: "all", label: "All", icon: <SearchIcon /> },
-  { value: "pdf", label: "PDF", icon: <PictureAsPdfIcon /> },
-  { value: "doc", label: "DOC", icon: <DescriptionIcon /> },
-  { value: "xls", label: "XLS", icon: <GridOnIcon /> },
-  { value: "ppt", label: "PPT", icon: <SlideshowIcon /> },
-];
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import {
+  Box,
+  InputAdornment,
+  TextField,
+  Popover,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material";
+import { fileTypeOptions } from "@/app/_lib/fileTypes";
 
 const Searchbar: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>("");
-  const [selectValue, setSelectValue] = useState<string>("");
+  const [selectValue, setSelectValue] = useState<string>("pdf");
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
 
-  const handleSelectChange = (selectedOption: any) => {
-    setSelectValue(selectedOption.value);
+  const handleSelectChange = (value: string) => {
+    setSelectValue(value);
+    setAnchorEl(null);
   };
 
   const handleSubmit = async () => {
@@ -44,14 +49,15 @@ const Searchbar: React.FC = () => {
     }
   };
 
-  const Option = (props: any) => (
-    <components.Option {...props}>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        {props.data.icon}
-        <span style={{ marginLeft: "8px" }}>{props.data.label}</span>
-      </div>
-    </components.Option>
-  );
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
 
   return (
     <Box
@@ -85,32 +91,90 @@ const Searchbar: React.FC = () => {
           ),
         }}
       />
-      <Select
-        name="file_type"
-        value={fileTypeOptions.find((option) => option.value === selectValue)}
-        onChange={handleSelectChange}
-        options={fileTypeOptions}
-        components={{ Option }}
-        placeholder="File Type"
-        styles={{
-          control: (provided) => ({
-            ...provided,
-            borderRadius: "24px",
-            minWidth: "120px",
-            height: "56px",
-          }),
-          valueContainer: (provided) => ({
-            ...provided,
-            height: "56px",
-            display: "flex",
-            alignItems: "center",
-          }),
-          singleValue: (provided) => ({
-            ...provided,
-            margin: "0 8px",
-          }),
+      <Box
+        onClick={handleClick}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          border: "1px solid #c4c4c4",
+          borderRadius: "24px",
+          padding: "0 16px",
+          cursor: "pointer",
+          height: "56px",
+          "&:hover": {
+            borderColor: "#000",
+          },
         }}
-      />
+      >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {fileTypeOptions.find((option) => option.value === selectValue)?.icon}
+          <Typography sx={{ ml: 1 }}>
+            {
+              fileTypeOptions.find((option) => option.value === selectValue)
+                ?.label
+            }
+          </Typography>
+        </Box>
+        <ArrowDropDownIcon />
+      </Box>
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        marginThreshold={-20}
+        slotProps={{
+          paper: {
+            style: {
+              maxHeight: "200px",
+              overflow: "hidden",
+            },
+          },
+        }}
+      >
+        <Box
+          sx={{
+            maxHeight: "300px",
+            overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: "8px",
+            },
+            "&::-webkit-scrollbar-track": {
+              backgroundColor: "rgba(0,0,0,0.1)",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "rgba(0,0,0,0.2)",
+              borderRadius: "4px",
+            },
+          }}
+        >
+          <List>
+            {fileTypeOptions.map((option) => (
+              <ListItem
+                key={option.value}
+                onClick={() => handleSelectChange(option.value)}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.04)",
+                  },
+                }}
+              >
+                <ListItemIcon>{option.icon}</ListItemIcon>
+                <ListItemText primary={option.label} />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Popover>
     </Box>
   );
 };
